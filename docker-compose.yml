@@ -1,0 +1,30 @@
+version: '3.5'
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - vm_net
+    restart: always
+  service_backend:
+    build: ./service_backend
+    ports:
+      - 8000:8000
+    depends_on:
+      - "postgres"
+    volumes:
+      - ./service_backend:/app
+    networks:
+      - vm_net
+volumes:
+  pgdata: {}
+networks:
+  vm_net:
