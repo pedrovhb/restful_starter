@@ -1,5 +1,3 @@
-import os
-
 from starlette.testclient import TestClient
 from main import app
 

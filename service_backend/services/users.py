@@ -1,9 +1,9 @@
 from fastapi import HTTPException
-from peewee import fn, DoesNotExist
+from peewee import fn
 from starlette.requests import Request
 
-from schemas import *
-from models import *
+from db.schemas import *
+from db.models import *
 from utils import log
 
 from argon2 import PasswordHasher

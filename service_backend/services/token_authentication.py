@@ -5,8 +5,8 @@ from fastapi import HTTPException
 from peewee import fn
 from starlette.requests import Request
 
-from models import User
-from schemas import UserSchema
+from db.models import User
+from db.schemas import UserSchema
 from utils import JWT_SECRET
 
 

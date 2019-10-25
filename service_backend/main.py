@@ -4,9 +4,9 @@ from starlette.responses import Response
 from fastapi import FastAPI, Depends
 import jwt
 
-import users
-from schemas import UserSchema, UserRegisterSchema, UserLoginSchema
-from token_authentication import get_current_user
+from services import users
+from db.schemas import UserSchema, UserRegisterSchema, UserLoginSchema
+from services.token_authentication import get_current_user
 from utils import JWT_SECRET
 
 app = FastAPI()
