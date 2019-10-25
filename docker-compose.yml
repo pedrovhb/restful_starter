@@ -4,12 +4,14 @@ services:
     container_name: postgres
     image: postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: postgres
+#      POSTGRES_USER: postgres
+      POSTGRES_MULTIPLE_DATABASES: "service_db,service_user,secret: service_db_test,service_user_test,secret"
+#      POSTGRES_PASSWORD: secret
+#      POSTGRES_DB: postgres
     ports:
       - 5432:5432
     volumes:
+      - ./docker_scripts/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - pgdata:/var/lib/postgresql/data
     networks:
       - vm_net

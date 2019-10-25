@@ -1,18 +1,12 @@
 from datetime import datetime, date
 from typing import List
 
-from pydantic import Schema, BaseModel, SecretStr, IPvAnyAddress
+from pydantic import Schema, BaseModel, SecretStr, IPvAnyAddress, EmailStr
 
-
-# todo - validação de campos
 
 class UserSchema(BaseModel):
-    name: str = Schema(...)
-    cpf: str = Schema(...)
-    rg: str = Schema(...)
-    address: str = Schema(...)
-    email: str = Schema(...)
-    phone: str = Schema(...)
+    name: str = Schema(..., min_length=2, max_length=255)
+    email: EmailStr = Schema(...)
     registration_date: datetime = datetime.now()
 
     class Config:
@@ -20,16 +14,16 @@ class UserSchema(BaseModel):
 
 
 class UserRegisterSchema(UserSchema):
-    password: SecretStr = Schema(...)
+    password: SecretStr = Schema(..., min_length=6, max_length=255)
 
 
 class UserDBSchema(UserRegisterSchema):
-    registration_ip: IPvAnyAddress = None
+    registration_ip: str = None
 
     class Config:
         orm_mode = True
 
 
 class UserLoginSchema(BaseModel):
-    email: str = Schema(...)
+    email: EmailStr = Schema(...)
     password: SecretStr = Schema(...)

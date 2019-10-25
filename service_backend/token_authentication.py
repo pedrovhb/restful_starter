@@ -1,3 +1,5 @@
+import re
+
 import jwt
 from fastapi import HTTPException
 from peewee import fn
@@ -11,6 +13,15 @@ from utils import JWT_SECRET
 def get_current_user(request: Request) -> UserSchema:
     jwt_token = request.cookies.get('Authorization')
 
+    # Apparently the testclient's cookies aren't detected, although they're in the header.
+    # We just try to get them manually here if that's the case
+    if not jwt_token:
+        try:
+            cookie_str = request.headers.get('cookie', '')
+            jwt_token = next(re.finditer('Authorization=(Bearer .*?)(?:[; ]|$)', cookie_str)).group(1)
+        except (StopIteration, AttributeError):
+            pass
+
     if jwt_token is None:
         raise HTTPException(401, 'authentication required')
 
@@ -18,7 +29,7 @@ def get_current_user(request: Request) -> UserSchema:
     try:
         decoded = jwt.decode(jwt_token, key=JWT_SECRET, algorithms=['HS256'])
         email = decoded.get('email')
-    except jwt.InvalidTokenError:
+    except jwt.exceptions.DecodeError:
         raise HTTPException(401, 'invalid jwt token')
 
     user_orm = User.select().where(fn.Lower(User.email) == email).first()

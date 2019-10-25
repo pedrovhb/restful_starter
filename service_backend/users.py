@@ -15,6 +15,9 @@ pw_hasher = PasswordHasher()
 def register_user(user_in: UserRegisterSchema, request: Request) -> UserSchema:
     log.info(f'Attempting to register user:\n{user_in}')
 
+    if not 255 >= len(user_in.password.get_secret_value()) >= 6:
+        raise HTTPException(422, 'invalid password length')
+
     # Verificar se usuário com esse e-mail já existe
     if User.select().where(fn.Lower(User.email) == user_in.email.lower()).exists():
         log.info(f'409: User {user_in.email} already exists.')
